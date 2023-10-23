@@ -11,13 +11,34 @@ const Problem1 = () => {
         const id = form.id.value;
         const name = form.name.value;
         const status = form.status.value;
-        const newInfo = [ ...table, {id, name, status} ];
+        const newInfo = [...table, { id, name, status }];
         setTable(newInfo);
+        form.reset();
     }
+
+    const active = table.filter(item => item.status === 'active');
+    const completed = table.filter(item => item.status === 'completed');
 
     const handleClick = (val) => {
         setShow(val);
     }
+    const customSort = (a, b) => {
+        if (a.status === 'active' && b.status !== 'active') {
+            return -1;
+        }
+        if (a.status !== 'active' && b.status === 'active') {
+            return 1;
+        }
+        if (a.status === 'completed' && b.status !== 'completed') {
+            return -1;
+        }
+        if (a.status !== 'completed' && b.status === 'completed') {
+            return 1;
+        }
+        return 0;
+    };
+
+    table.sort(customSort);
 
     return (
 
@@ -62,7 +83,11 @@ const Problem1 = () => {
                         </thead>
                         <tbody>
                             {
-                                table.map(i => <TableItems key={i.id} i={i}></TableItems>)
+                                show === 'all'
+                                ? table.map((i) => <TableItems key={i.id} i={i}></TableItems>)
+                                : show === 'active'
+                                ? active.map((i) => <TableItems key={i.id} i={i}></TableItems>)
+                                : completed.map((i) => <TableItems key={i.id} i={i}></TableItems>)
                             }
                         </tbody>
                     </table>
